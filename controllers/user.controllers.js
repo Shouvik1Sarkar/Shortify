@@ -83,4 +83,17 @@ const handleLogIn = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "User logged In."));
 });
 
-export { handleRegister, handleLogIn };
+const getUser = asyncHandler(async (req, res) => {
+  const user_id = req.user;
+  if (!user_id) {
+    throw new ApiError(500, "USER NOT LOGGED IN");
+  }
+  console.log("USER ID: ", user_id);
+
+  const user = await User.findById(user_id._id).select("-salt");
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "USER ID FOUND IN COOKIE"));
+});
+
+export { handleRegister, handleLogIn, getUser };
