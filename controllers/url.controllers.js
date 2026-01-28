@@ -6,13 +6,15 @@ import asyncHandler from "../utils/AsyncHandler.utils.js";
 import crypto from "crypto";
 
 const handleHome = asyncHandler(async (req, res) => {
-  throw new ApiResponse(500, "error");
+  return res.send("Hello");
 });
 const handleUrlShort = asyncHandler(async (req, res) => {
   const { original_url } = req.body;
+
   if (!original_url) {
     return res.status(500).json(new ApiError(400, "Please enter url"));
   }
+
   console.log(original_url);
 
   const unique_code = crypto.randomBytes(8).toString("base64url");
