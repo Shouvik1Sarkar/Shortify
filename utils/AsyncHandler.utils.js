@@ -1,7 +1,9 @@
 function asyncHandler(fn) {
   return (req, res, next) => {
     Promise.resolve()
-      .then(fn(req, res, next))
+      .then(() => {
+        return fn(req, res, next);
+      })
       .catch((err) => {
         res.status(err.statusCode || 500).json({
           success: false,

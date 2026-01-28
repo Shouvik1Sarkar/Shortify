@@ -12,7 +12,7 @@ const handleUrlShort = asyncHandler(async (req, res) => {
   const { original_url } = req.body;
 
   if (!original_url) {
-    return res.status(500).json(new ApiError(400, "Please enter url"));
+    throw new ApiError(400, "Please enter url");
   }
 
   console.log(original_url);

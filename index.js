@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 // import
 
 import urlRoutes from "./routes/urls.routes.js";
+import userRoutes from "./routes/users.routes.js";
 
 const app = express();
 
@@ -31,5 +32,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/urls/", urlRoutes);
+app.use("/api/v1/users/", userRoutes);
 
 app.listen(PORT, () => console.log(`Server running at port ${PORT}`));
