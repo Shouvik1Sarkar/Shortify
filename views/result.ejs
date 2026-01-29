@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <%- include("./partials/head") %>
+    <title>Bootstrap demo</title>
+  </head>
+  <body>
+      <%- include("./partials/nav") %>
+    <div class="container mt-5">
+      <div id="myAlert" class="alert alert-primary d-none" role="alert">
+        URL copied to the clip board
+      </div>
+      <form action="/api/v1/urls/short" method="post">
+        <div class="row align-items-center">
+          <label for="urlInput" class="col-sm-2 col-form-label">
+            Enter URL:
+          </label>
+
+          <div class="col-sm-10">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                id="urlInput"
+                placeholder="https://example.com"
+                name="original_url"
+              />
+              <button class="btn btn-primary" type="submit">Enter</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="container mt-5">
+      <% if (locals.url) { %>
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <div class="card shadow-sm text-center">
+            <div class="card-body">
+              <h5 class="card-title mb-3">Your Short URL 🎉</h5>
+
+              <div class="input-group mb-3">
+                <input
+                  type="text"
+                  class="form-control text-center"
+                  id="shortUrl"
+                  value="http://localhost:3000/api/v1/urls/short/<%= url.randomCode %>"
+                  readonly
+                />
+                <button
+                  class="btn btn-outline-primary"
+                  type="button"
+                  onclick="copyShortUrl()"
+                >
+                  Copy
+                </button>
+              </div>
+
+              <small class="text-muted">
+                Click copy to share your shortened URL
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+
+    <script>
+      function copyShortUrl() {
+        const input = document.getElementById("shortUrl");
+        input.select();
+        input.setSelectionRange(0, 99999); // mobile support
+        navigator.clipboard.writeText(input.value);
+
+        // optional feedback
+        // alert("Copied to clipboard!");
+        document.getElementById("myAlert").classList.remove("d-none");
+
+        setTimeout(() => {
+          document.getElementById("myAlert").classList.add("d-none");
+        }, 2000);
+      }
+    </script>
+
+    <%- include("./partials/script") %>
+  </body>
+</html>

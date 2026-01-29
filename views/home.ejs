@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <%- include("./partials/head") %>
+    <title>Shortify</title>
+  </head>
+  <%- include("./partials/nav") %>
+  <body>
+    <div class="container mt-5">
+      <form action="/api/v1/urls/short" method="post">
+        <div class="row align-items-center">
+          <label for="urlInput" class="col-sm-2 col-form-label">
+            Enter URL:
+          </label>
+
+          <div class="col-sm-10">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                id="urlInput"
+                placeholder="https://example.com"
+                name="original_url"
+              />
+              <button class="btn btn-primary" type="submit">Enter</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+ 
+       <div class="container mt-5">
+
+  <% if (!locals.user) { %>
+    <!-- NOT LOGGED IN -->
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card text-center shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-muted">
+              🔒 Log in to see your history
+            </h5>
+            <a href="/api/v1/users/logIn" class="btn btn-primary mt-3">
+              Log In
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <% } else { %>
+    <!-- LOGGED IN -->
+    <div class="row">
+      <div class="col-12">
+        <h4 class="text-center mb-4">
+          ────────── Your History ──────────
+        </h4>
+
+        <div class="table-responsive shadow-sm">
+          <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Sl No</th>
+                <th>Short URL</th>
+                <th>Original URL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (locals.history && history.length > 0) { %>
+                <% history.forEach((item, index) => { %>
+                  <tr>
+                    <td><%= index + 1 %></td>
+                    <td>
+                      <a href="/<%= item.shortCode %>" target="_blank">
+                        <%= item.shortCode %>
+                      </a>
+                    </td>
+                    <td class="text-truncate" style="max-width: 300px;">
+                      <%= item.originalUrl %>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="3" class="text-muted">
+                    No history yet 😶
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+</div>
+ 
+    <%- include("./partials/script") %>
+  </body>
+</html>

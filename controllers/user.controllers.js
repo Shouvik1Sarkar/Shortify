@@ -3,6 +3,13 @@ import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/AsyncHandler.utils.js";
 
+const hadnleDisplayRegister = asyncHandler(async (req, res) => {
+  return res.render("register");
+});
+const hadnleDisplayLogIn = asyncHandler(async (req, res) => {
+  return res.render("logIn");
+});
+
 const handleRegister = asyncHandler(async (req, res) => {
   const { fullName, userName, email, password } = req.body;
 
@@ -33,13 +40,19 @@ const handleRegister = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to create User");
   }
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, user, "User Created Successfully"));
+  return res.redirect("/api/v1/users/logIn/");
+  //   return res.render("logIn");
+
+  //   return res
+  //     .status(200)
+  //     .json(new ApiResponse(200, user, "User Created Successfully"));
 });
 
 const handleLogIn = asyncHandler(async (req, res) => {
   const { userName, email, password } = req.body;
+  console.log("un: ", userName);
+  console.log("un: ", email);
+  console.log("un: ", password);
 
   if (!userName && !email) {
     throw new ApiError(500, "UserName or email is required.");
@@ -77,10 +90,12 @@ const handleLogIn = asyncHandler(async (req, res) => {
   user.salt = secretSalt;
   user.save();
 
-  return res
-    .status(200)
-    .cookie("secretSalt", secretSalt)
-    .json(new ApiResponse(200, user, "User logged In."));
+  return res.cookie("secretSalt", secretSalt).redirect("/");
+
+  //   return res
+  //     .status(200)
+  //     .cookie("secretSalt", secretSalt)
+  //     .json(new ApiResponse(200, user, "User logged In."));
 });
 
 const getUser = asyncHandler(async (req, res) => {
@@ -96,4 +111,30 @@ const getUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "USER ID FOUND IN COOKIE"));
 });
 
-export { handleRegister, handleLogIn, getUser };
+const logOutUser = asyncHandler(async (req, res) => {
+  const user_id = req.user;
+
+  const user = await User.findByIdAndUpdate(user_id._id, {
+    $set: {
+      salt: null,
+    },
+  });
+  if (!user) {
+    console.error("USER NOT FOUND");
+  }
+
+  res.clearCookie("secretSalt");
+
+  return res.redirect("/");
+
+  //   return res.status(200).json(new ApiResponse(200, null, "User Logged Out"));
+});
+
+export {
+  handleRegister,
+  handleLogIn,
+  getUser,
+  logOutUser,
+  hadnleDisplayRegister,
+  hadnleDisplayLogIn,
+};

@@ -29,8 +29,12 @@ const handleUrlShort = asyncHandler(async (req, res) => {
   if (!url) {
     throw new ApiError(500, "URL NOT CREATED");
   }
+  return res.render("result", {
+    user: req.user1,
+    url: url,
+  });
 
-  return res.status(200).json(new ApiResponse(200, url, "url done"));
+  // return res.status(200).json(new ApiResponse(200, url, "url done"));
 });
 
 const handleRedirect = asyncHandler(async (req, res) => {

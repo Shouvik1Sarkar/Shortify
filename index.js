@@ -7,6 +7,10 @@ import connectDB from "./db/connect.js";
 
 import cookieParser from "cookie-parser";
 
+import path from "path";
+import authLogIn from "./middlewares/authLogIn.middlewares.js";
+// import ejs from "ejs";
+
 // import
 
 import urlRoutes from "./routes/urls.routes.js";
@@ -15,7 +19,10 @@ import userRoutes from "./routes/users.routes.js";
 const app = express();
 
 const PORT = process.env.PORT || 8000;
+// set
 
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
 // inbuilt
 
 app.use(express.json());
@@ -26,9 +33,8 @@ app.use(cookieParser());
 
 connectDB(process.env.MONGODB_URI);
 
-app.get("/", (req, res) => {
-  // res.redirect()
-  return res.send("HOME ROUTE");
+app.get("/", authLogIn, (req, res) => {
+  res.render("home", { user: req.user1 });
 });
 
 app.use("/api/v1/urls/", urlRoutes);
