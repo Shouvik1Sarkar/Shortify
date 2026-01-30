@@ -47,7 +47,11 @@ const handleRedirect = asyncHandler(async (req, res) => {
     return res.status(500).json(new ApiError(400, "Punique_code not found"));
   }
 
-  const find_original = await Url.findOne({ randomCode: unique_code });
+  const find_original = await Url.findOneAndUpdate(
+    { randomCode: unique_code },
+    { $inc: { noOfClicks: 1 } },
+    { new: true },
+  );
 
   if (!find_original) {
     return res.status(500).json(new ApiError(400, "url not found"));

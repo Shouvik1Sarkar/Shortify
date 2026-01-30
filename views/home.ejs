@@ -60,41 +60,51 @@
         <div class="table-responsive shadow-sm p-3 rounded">
 
   <table class="table table-bordered table-hover text-center align-middle mb-3">
-    <thead class="table-dark">
-      <tr>
-        <th>Sl No</th>
-        <th>Short URL</th>
-        <th>Original URL</th>
-      </tr>
-    </thead>
+  <thead class="table-dark">
+    <tr>
+      <th>Sl No</th>
+      <th>Short URL</th>
+      <th>Original URL</th>
+      <th>Total Clicks</th>
+    </tr>
+  </thead>
 
-    <tbody>
-      <% if (locals.history && history.length > 0) { %>
-        <% history.forEach((item, index) => { %>
-          <tr>
-            <td><%= index + 1 %></td>
-            <td>
-              <a
-                href="http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>"
-                target="_blank"
-              >
-                http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>
-              </a>
-            </td>
-            <td class="text-truncate" style="max-width: 300px;">
-              <%= item.originalUrl %>
-            </td>
-          </tr>
-        <% }) %>
-      <% } else { %>
+  <tbody>
+    <% if (locals.history && history.length > 0) { %>
+      <% history.forEach((item, index) => { %>
         <tr>
-          <td colspan="3" class="text-muted">
-            No history yet 😶
+          <td><%= index + 1 %></td>
+
+          <td>
+            <a
+              href="http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>"
+              target="_blank"
+            >
+              http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>
+            </a>
+          </td>
+
+          <td class="text-truncate" style="max-width: 300px;">
+            <%= item.originalUrl %>
+          </td>
+
+          <td>
+            <span class="badge bg-primary">
+              <%= item.noOfClicks || 0 %>
+            </span>
           </td>
         </tr>
-      <% } %>
-    </tbody>
-  </table>
+      <% }) %>
+    <% } else { %>
+      <tr>
+        <td colspan="4" class="text-muted">
+          No history yet 😶
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
 
   <% if (locals.history && history.length > 0) { %>
     <div class="d-flex justify-content-center">
