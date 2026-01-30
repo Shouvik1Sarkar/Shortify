@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Url from "../models/url.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
@@ -12,7 +13,11 @@ const handleUrlShort = asyncHandler(async (req, res) => {
   const { original_url } = req.body;
 
   if (!original_url) {
-    throw new ApiError(400, "Please enter url");
+    return res.redirect("/");
+    // return res.render("home", {
+    //   errorMessage: "please enter url",
+    // });
+    // throw new ApiError(400, "Please enter url");
   }
 
   console.log(original_url);
@@ -24,10 +29,11 @@ const handleUrlShort = asyncHandler(async (req, res) => {
   const url = await Url.create({
     randomCode: unique_code,
     originalUrl: original_url,
-    createdBy: req.user._id,
+    createdBy: req.user?._id || undefined,
   });
 
   if (!url) {
+    // return res.redirect("/")
     throw new ApiError(500, "URL NOT CREATED");
   }
   return res.render("result", {
@@ -68,4 +74,41 @@ const handleDeleteAllHistory = asyncHandler(async (req, res) => {
   await Url.deleteMany({ createdBy: req.user._id });
   return res.redirect("/");
 });
-export { handleHome, handleUrlShort, handleRedirect, handleDeleteAllHistory };
+
+const handleLast24hUrls = asyncHandler(async (req, res) => {
+  const last24Hours = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const latestUrls = await Url.find({
+    createdBy: req.user._id,
+    createdAt: {
+      $gte: last24Hours,
+    },
+  });
+
+  const topUrls = await Url.aggregate([
+    {
+      $match: {
+        createdBy: new mongoose.Types.ObjectId(req.user._id),
+      },
+    },
+    {
+      $sort: { noOfClicks: -1 },
+    },
+    {
+      $limit: 5,
+    },
+  ]);
+
+  console.log("top urls: ", topUrls);
+
+  return res.render("dashBoard", {
+    latestUrls: latestUrls,
+    topUrls: topUrls,
+  });
+});
+export {
+  handleHome,
+  handleUrlShort,
+  handleRedirect,
+  handleDeleteAllHistory,
+  handleLast24hUrls,
+};

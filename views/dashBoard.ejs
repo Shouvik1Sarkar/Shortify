@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <%- include("./partials/head") %>
+    <title>Bootstrap demo</title>
+  </head>
+  <body style="background-color: rgb(46, 45, 45);  
+  color: #e0e0e0;"  >
+    <%- include("./partials/nav") %>
+
+    <br />
+
+     <div class="container mt-5">
+
+    <% if (locals.latestUrls) { %>
+
+             <h4 class="text-center mb-4">
+          ────────── YoUrls created in last 24 hours ──────────
+        </h4>
+
+          <table class="table table-bordered table-hover text-center align-middle mb-3">
+  <thead class="table-dark">
+    <tr>
+      <th>Sl No</th>
+      <th>Short URL</th>
+      <th>Original URL</th>
+      <th>Total Clicks</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if (locals.latestUrls && latestUrls.length > 0) { %>
+      <% latestUrls.forEach((item, index) => { %>
+        <tr>
+          <td><%= index + 1 %></td>
+
+          <td>
+            <a
+              href="http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>"
+              target="_blank"
+            >
+              http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>
+            </a>
+          </td>
+
+          <td class="text-truncate" style="max-width: 300px;">
+            <%= item.originalUrl %>
+          </td>
+
+          <td>
+            <span class="badge bg-primary">
+              <%= item.noOfClicks || 0 %>
+            </span>
+          </td>
+        </tr>
+      <% }) %>
+    <% } else { %>
+      <tr>
+        <td colspan="4" class="text-muted">
+          No latestUrls yet 😶
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+    <% } %>
+
+
+
+        <% if (locals.topUrls) { %>
+
+             <h4 class="text-center mb-4">
+          ────────── YoUrls created in last 24 hours ──────────
+        </h4>
+
+          <table class="table table-bordered table-hover text-center align-middle mb-3">
+  <thead class="table-dark">
+    <tr>
+      <th>Sl No</th>
+      <th>Short URL</th>
+      <th>Original URL</th>
+      <th>Total Clicks</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if (locals.topUrls && topUrls.length > 0) { %>
+      <% latestUrls.forEach((item, index) => { %>
+        <tr>
+          <td><%= index + 1 %></td>
+
+          <td>
+            <a
+              href="http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>"
+              target="_blank"
+            >
+              http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>
+            </a>
+          </td>
+
+          <td class="text-truncate" style="max-width: 300px;">
+            <%= item.originalUrl %>
+          </td>
+
+          <td>
+            <span class="badge bg-primary">
+              <%= item.noOfClicks || 0 %>
+            </span>
+          </td>
+        </tr>
+      <% }) %>
+    <% } else { %>
+      <tr>
+        <td colspan="4" class="text-muted">
+          No top Urls yet 😶
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+    <% } %>
+
+
+    </div>
+
+
+
+    <%- include("./partials/script") %>
+  </body>
+</html>

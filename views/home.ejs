@@ -5,11 +5,38 @@
     <title>Shortify</title>
   </head>
   <%- include("./partials/nav") %>
-  <body>
+  <body style="background-color: rgb(46, 45, 45);  
+  color: #e0e0e0;" >
+
+
+
+
+
+    <% if (locals.errorMessage) { %>
+      <div id="myAlert" class="alert alert-primary d-none" role="alert">
+         <%= errorMessage %>
+       </div>
+      <script>
+         document.getElementById("myAlert").classList.remove("d-none");
+
+        setTimeout(() => {
+          document.getElementById("myAlert").classList.add("d-none");
+        }, 2000);
+</script>
+    <% } %>
+
+
+
+
+
+
+
+
+
     <div class="container mt-5">
       <form action="/api/v1/urls/short" method="post">
         <div class="row align-items-center">
-          <label for="urlInput" class="col-sm-2 col-form-label">
+          <label for="urlInput" class="col-sm-2 col-form-label" >
             Enter URL:
           </label>
 
@@ -21,6 +48,7 @@
                 id="urlInput"
                 placeholder="https://example.com"
                 name="original_url"
+                required
               />
               <button class="btn btn-primary" type="submit">Enter</button>
             </div>
@@ -29,7 +57,6 @@
       </form>
     </div>
 
- 
        <div class="container mt-5">
 
   <% if (!locals.user) { %>
@@ -132,3 +159,4 @@
     <%- include("./partials/script") %>
   </body>
 </html>
+ 
