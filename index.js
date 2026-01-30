@@ -15,6 +15,7 @@ import authLogIn from "./middlewares/authLogIn.middlewares.js";
 
 import urlRoutes from "./routes/urls.routes.js";
 import userRoutes from "./routes/users.routes.js";
+import Url from "./models/url.models.js";
 
 const app = express();
 
@@ -33,8 +34,10 @@ app.use(cookieParser());
 
 connectDB(process.env.MONGODB_URI);
 
-app.get("/", authLogIn, (req, res) => {
-  res.render("home", { user: req.user1 });
+app.get("/", authLogIn, async (req, res) => {
+  const urls = await Url.find({ createdBy: req.user?._id });
+
+  res.render("home", { user: req.user1, history: urls });
 });
 
 app.use("/api/v1/urls/", urlRoutes);

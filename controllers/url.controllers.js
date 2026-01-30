@@ -24,6 +24,7 @@ const handleUrlShort = asyncHandler(async (req, res) => {
   const url = await Url.create({
     randomCode: unique_code,
     originalUrl: original_url,
+    createdBy: req.user._id,
   });
 
   if (!url) {
@@ -58,4 +59,9 @@ const handleRedirect = asyncHandler(async (req, res) => {
   return res.redirect(original_url);
   // return res.send("This is it");
 });
-export { handleHome, handleUrlShort, handleRedirect };
+
+const handleDeleteAllHistory = asyncHandler(async (req, res) => {
+  await Url.deleteMany({ createdBy: req.user._id });
+  return res.redirect("/");
+});
+export { handleHome, handleUrlShort, handleRedirect, handleDeleteAllHistory };

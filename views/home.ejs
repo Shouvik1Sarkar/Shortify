@@ -56,42 +56,64 @@
         <h4 class="text-center mb-4">
           ────────── Your History ──────────
         </h4>
+  
+        <div class="table-responsive shadow-sm p-3 rounded">
 
-        <div class="table-responsive shadow-sm">
-          <table class="table table-bordered table-hover text-center align-middle">
-            <thead class="table-dark">
-              <tr>
-                <th>Sl No</th>
-                <th>Short URL</th>
-                <th>Original URL</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (locals.history && history.length > 0) { %>
-                <% history.forEach((item, index) => { %>
-                  <tr>
-                    <td><%= index + 1 %></td>
-                    <td>
-                      <a href="/<%= item.shortCode %>" target="_blank">
-                        <%= item.shortCode %>
-                      </a>
-                    </td>
-                    <td class="text-truncate" style="max-width: 300px;">
-                      <%= item.originalUrl %>
-                    </td>
-                  </tr>
-                <% }) %>
-              <% } else { %>
-                <tr>
-                  <td colspan="3" class="text-muted">
-                    No history yet 😶
-                  </td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <table class="table table-bordered table-hover text-center align-middle mb-3">
+    <thead class="table-dark">
+      <tr>
+        <th>Sl No</th>
+        <th>Short URL</th>
+        <th>Original URL</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% if (locals.history && history.length > 0) { %>
+        <% history.forEach((item, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td>
+              <a
+                href="http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>"
+                target="_blank"
+              >
+                http://localhost:3000/api/v1/urls/short/<%= item.randomCode %>
+              </a>
+            </td>
+            <td class="text-truncate" style="max-width: 300px;">
+              <%= item.originalUrl %>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="3" class="text-muted">
+            No history yet 😶
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+
+  <% if (locals.history && history.length > 0) { %>
+    <div class="d-flex justify-content-center">
+      <form
+        action="/api/v1/urls/delete"
+        method="get"
+        onsubmit="return confirm('Are you sure you want to delete all URLs?')"
+      >
+        <button class="btn btn-danger">
+          Delete All URLs
+        </button>
+      </form>
+    </div>
+  <% } %>
+
+</div>
+        <!-- <div class="btn btn-primary" type="submit" href="/api/v1/urls/delete">delete</div> -->
+
+    </div>
     </div>
   <% } %>
 
