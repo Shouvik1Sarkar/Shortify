@@ -68,7 +68,10 @@ const handleLogIn = asyncHandler(async (req, res) => {
   }).select("+password");
 
   if (!user) {
-    throw new ApiError(500, "User does not exist.");
+    return res.render("logIn", {
+      errorMessage: "User not logged In.",
+    });
+    // throw new ApiError(500, "User does not exist.");
   }
 
   console.log("USER: ", user);
@@ -78,7 +81,10 @@ const handleLogIn = asyncHandler(async (req, res) => {
   console.log("isPassword true: 0", isPassTrue);
 
   if (!isPassTrue) {
-    throw new ApiError(500, "Password did not match");
+    return res.render("logIn", {
+      errorMessage: "Password did not match.",
+    });
+    // throw new ApiError(500, "Password did not match");
   }
 
   const secretSalt = await user.createSalt(user._id);

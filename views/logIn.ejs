@@ -6,6 +6,20 @@
   </head>
   <%- include("./partials/nav") %>
   <body>
+
+    <% if (locals.errorMessage) { %>
+      <div id="myAlert" class="alert alert-primary d-none" role="alert">
+         <%= errorMessage %>
+       </div>
+      <script>
+         document.getElementById("myAlert").classList.remove("d-none");
+
+        setTimeout(() => {
+          document.getElementById("myAlert").classList.add("d-none");
+        }, 2000);
+</script>
+    <% } %>
+
     <div class="container mt-5">
       <form action="/api/v1/users/LogIn/" method="post">
         <!-- Email -->
