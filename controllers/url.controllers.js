@@ -5,6 +5,7 @@ import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/AsyncHandler.utils.js";
 
 import crypto from "crypto";
+import create_unique_hash from "../utils/unique_code.utils.js";
 
 const handleHome = asyncHandler(async (req, res) => {
   return res.send("Hello");
@@ -20,6 +21,8 @@ const handleUrlShort = asyncHandler(async (req, res) => {
     // throw new ApiError(400, "Please enter url");
   }
 
+  const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 hrs
+
   console.log(original_url);
 
   const unique_code = crypto.randomBytes(8).toString("base64url");
@@ -30,6 +33,7 @@ const handleUrlShort = asyncHandler(async (req, res) => {
     randomCode: unique_code,
     originalUrl: original_url,
     createdBy: req.user?._id || undefined,
+    expiresAt,
   });
 
   if (!url) {
@@ -44,31 +48,44 @@ const handleUrlShort = asyncHandler(async (req, res) => {
   // return res.status(200).json(new ApiResponse(200, url, "url done"));
 });
 
-const handleRedirect = asyncHandler(async (req, res) => {
-  const { unique_code } = req.params;
-  console.log("---", unique_code);
-  console.log("---", req.params);
+const handleRedirect = async (req, res) => {
+  const { code } = req.params;
 
-  if (!unique_code) {
-    return res.status(500).json(new ApiError(400, "Punique_code not found"));
+  const ip = req.ip;
+
+  const user_ip = create_unique_hash(ip);
+
+  const url = await Url.findOne({ randomCode: code });
+  console.log("url:", url);
+
+  if (!url) {
+    return res.status(404).send("URL not found");
   }
 
-  const find_original = await Url.findOneAndUpdate(
-    { randomCode: unique_code },
-    { $inc: { noOfClicks: 1 } },
-    { new: true },
-  );
-
-  if (!find_original) {
-    return res.status(500).json(new ApiError(400, "url not found"));
+  //   EXPIRY CHECK
+  if (url.expiresAt && url.expiresAt < new Date()) {
+    return res.render("expired", {
+      message: "404 Not found",
+    });
+    // return res.status(410).send("This link has expired");
   }
-  console.log("url: ", find_original);
-  const original_url = find_original.originalUrl;
 
-  console.log(original_url);
-  return res.redirect(original_url);
-  // return res.send("This is it");
-});
+  const uniqueClicks = url.uniqueClicks.includes(user_ip);
+
+  if (!uniqueClicks) {
+    await Url.updateOne(
+      { _id: url._id },
+      {
+        $inc: { noOfClicks: 1, unique_count: 1 },
+        $addToSet: { uniqueClicks: user_ip },
+      },
+    );
+  } else {
+    await Url.updateOne({ _id: url._id }, { $inc: { noOfClicks: 1 } });
+  }
+
+  return res.redirect(url.originalUrl);
+};
 
 const handleDeleteAllHistory = asyncHandler(async (req, res) => {
   await Url.deleteMany({ createdBy: req.user._id });
@@ -103,6 +120,7 @@ const handleLast24hUrls = asyncHandler(async (req, res) => {
   return res.render("dashBoard", {
     latestUrls: latestUrls,
     topUrls: topUrls,
+    user: req.user1,
   });
 });
 export {

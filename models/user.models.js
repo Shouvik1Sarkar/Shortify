@@ -52,6 +52,7 @@ userSchema.methods.checkPass = async function (userPassword) {
 };
 
 userSchema.methods.createSalt = async function (userId) {
+  // access token
   return jwt.sign(
     {
       _id: userId,

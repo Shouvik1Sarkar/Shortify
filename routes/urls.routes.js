@@ -19,6 +19,6 @@ urlRoutes.get("/", handleHome);
 urlRoutes.get("/delete", authLogIn, handleDeleteAllHistory);
 urlRoutes.route("/short").post(authLogIn, shortenLimiter, handleUrlShort);
 urlRoutes.route("/dashBoard").get(authLogIn, handleLast24hUrls);
-urlRoutes.route("/short/:unique_code").get(redirectLimiter, handleRedirect);
+urlRoutes.route("/short/:code").get(redirectLimiter, handleRedirect);
 
 export default urlRoutes;

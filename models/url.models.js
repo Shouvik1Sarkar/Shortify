@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const urlSchema = new mongoose.Schema(
   {
@@ -18,6 +19,19 @@ const urlSchema = new mongoose.Schema(
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+    },
+
+    uniqueClicks: {
+      type: [String],
+      default: [],
+    },
+    unique_count: {
+      type: Number,
+      default: 0,
+    },
+    expiresAt: {
+      type: Date,
+      default: null,
     },
   },
   { timestamps: true },

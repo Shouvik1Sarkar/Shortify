@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <%- include("./partials/head") %>
+    <title>Shortify</title>
+  </head>
+  <!-- <%- include("./partials/nav") %> -->
+  <body style="background-color: rgb(46, 45, 45); color: #e0e0e0">
+    <%- include("./partials/script") %>
+
+    <% if (locals.message) { %>
+
+        <div class="container mt-5">
+            <h1><%= message %></h1>
+        </div>
+    <% } %>
+  </body>
+</html>
